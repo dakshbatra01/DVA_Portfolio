@@ -1,16 +1,41 @@
-# React + Vite
+# Data Visualization & Analytics Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the personal portfolio of **Daksh Batra**, a Data Visualization & Analytics professional dedicated to "Transforming Complex Data into Actionable Intelligence."
 
-Currently, two official plugins are available:
+This repository contains the source code for a modern, responsive, and highly interactive web portfolio built to showcase data-driven projects, analytical expertise, and technical skills.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Live Demo
 
-## React Compiler
+**[dva-portfolio-kappa.vercel.app](https://dva-portfolio-kappa.vercel.app)**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technical Expertise
 
-## Expanding the ESLint configuration
+The portfolio highlights proficiency in the following core areas:
+- **Data Visualization & BI:** Tableau, PowerBI, Seaborn, Matplotlib
+- **Data Processing & Analysis:** Pandas, NumPy, SQL, Excel
+- **Predictive Analytics:** Python, Statistical Modeling, Machine Learning
+- **Business Strategy & Ops:** Scenario Modeling, KPI Tracking, Risk Segmentation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Featured Projects
+
+1. **[Restaurant Performance & Optimization](https://github.com/dakshbatra01/DVA_Capstone_G2)** (Business Analytics)
+2. **[FinShield: Loan Risk Prediction](https://github.com/dakshbatra01/SectionD_G1_FinShield)** (Financial Analytics)
+3. **[Netflix Content Strategy Analysis](https://github.com/dakshbatra01/Netflix_Data_Analysis)** (Entertainment Analytics)
+4. **[HR Attrition Analytics](https://github.com/dakshbatra01/HR_Attrition_Analysis)** (People Analytics)
+
+## Tech Stack (Frontend)
+
+- **React 19**
+- **Vite**
+- **Framer Motion** (for animations)
+- **Lucide React & React Icons**
+- **Vanilla CSS** (Custom Design System)
+
+## Contact
+
+- **Email:** daksh.batra2024@nst.rishihood.edu.in
+- **LinkedIn:** [Daksh Batra](https://www.linkedin.com/in/daksh-batra-124814317/)
+- **GitHub:** [@dakshbatra01](https://github.com/dakshbatra01)
+
+---
+*© 2026 Daksh Batra. All rights reserved.*
