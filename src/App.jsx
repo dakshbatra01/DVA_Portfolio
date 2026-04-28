@@ -1,11 +1,8 @@
-import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Mail, Database, BarChart3, Activity, Layers, ChevronRight, ExternalLink } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import './App.css'; // Though empty, good practice to keep the import
+import React, { useState } from 'react';
+import { Mail, MapPin, Link as LinkIcon, Users, Star, BookOpen, Layout, Package, X } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 import './index.css';
 
-// Project Images
 import proj1 from './assets/project1.png';
 import proj2 from './assets/project2.png';
 import proj3 from './assets/project3.png';
@@ -15,536 +12,316 @@ import profileImg from './assets/profile.jpg';
 const projects = [
   {
     id: 1,
-    title: "Restaurant Performance & Optimization",
-    category: "Business Analytics",
-    description: "Analyzed restaurant transactional sales data to evaluate revenue structure, operational efficiency, and customer satisfaction. Assessed revenue concentration risks and simulated sensitivity models.",
-    image: proj1,
-    tech: ["Google Sheets", "Pivot Tables", "Scenario Modeling"],
-    link: "https://github.com/dakshbatra01/DVA_Capstone_G2"
+    title: "DVA_Capstone_G2",
+    description: "Restaurant Performance & Operational Optimization. Analyzed transactional sales data to evaluate revenue structure, operational efficiency, and simulated sensitivity models.",
+    language: "Google Sheets",
+    categories: ["Google Sheets", "Data Visualisation"],
+    langColor: "#00f0ff",
+    link: "https://github.com/dakshbatra01/DVA_Capstone_G2",
+    stars: 12,
+    forks: 3,
+    image: proj1
   },
   {
     id: 2,
-    title: "FinShield: Loan Risk Prediction",
-    category: "Financial Analytics",
-    description: "Developed a data-driven risk segmentation framework to identify key financial factors driving loan defaults. Validated LTV & DTI dual-band policies to optimize borrower screening and portfolio performance.",
-    image: proj2,
-    tech: ["Python", "Statistical Analysis", "Tableau"],
-    link: "https://github.com/dakshbatra01/SectionD_G1_FinShield"
+    title: "SectionD_G1_FinShield",
+    description: "FinShield: Loan Risk Prediction. Data-driven risk segmentation framework identifying key financial factors driving loan defaults using LTV & DTI dual-band policies.",
+    language: "Python",
+    categories: ["Python", "Tableau", "Data Visualisation"],
+    langColor: "#3572A5",
+    link: "https://github.com/dakshbatra01/SectionD_G1_FinShield",
+    stars: 8,
+    forks: 1,
+    image: proj2
   },
   {
     id: 3,
-    title: "Netflix Content Strategy Analysis",
-    category: "Entertainment Analytics",
-    description: "Built an interactive Tableau dashboard bridging SQL databases to visualize Netflix's content distribution. Features include genre trend analysis, geographic audience heatmaps, and rating distributions.",
-    image: proj3,
-    tech: ["Tableau", "MySQL", "Advanced Excel", "Seaborn"],
-    link: "https://github.com/dakshbatra01/Netflix_Data_Analysis"
+    title: "Netflix_Data_Analysis",
+    description: "Netflix Content Strategy Analysis. Interactive Tableau dashboard bridging SQL databases to visualize content distribution, genre trends, and geographic heatmaps.",
+    language: "Tableau",
+    categories: ["Python", "Tableau", "Data Visualisation"],
+    langColor: "#e97627",
+    link: "https://github.com/dakshbatra01/Netflix_Data_Analysis",
+    stars: 15,
+    forks: 4,
+    image: proj3
   },
   {
     id: 4,
-    title: "HR Attrition Analytics",
-    category: "People Analytics",
-    description: "Designed an HR analytics dashboard to investigate organizational attrition patterns. Visualized key metrics across demographics, departments, and income levels using stacked histograms and density charts to enable targeted retention strategies.",
-    image: proj4,
-    tech: ["Data Visualisation", "Dashboard Design", "Statistical Modeling"],
-    link: "https://github.com/dakshbatra01/HR_Attrition_Analysis"
+    title: "HR_Attrition_Analysis",
+    description: "HR Attrition Analytics dashboard to investigate organizational patterns. Visualized metrics across demographics and income levels to enable retention strategies.",
+    language: "Data Visualisation",
+    categories: ["Python", "Tableau", "Data Visualisation"],
+    langColor: "#8b5cf6",
+    link: "https://github.com/dakshbatra01/HR_Attrition_Analysis",
+    stars: 5,
+    forks: 0,
+    image: proj4
   }
 ];
 
-const Skills = [
-  { 
-    name: "Data Visualization & BI", 
-    icon: Layers, 
-    color: "var(--accent-cyan)",
-    tools: ["Tableau", "PowerBI", "Seaborn", "Matplotlib"] 
-  },
-  { 
-    name: "Data Processing & Analysis", 
-    icon: Database, 
-    color: "var(--accent-purple)",
-    tools: ["Pandas", "NumPy", "SQL", "Excel"] 
-  },
-  { 
-    name: "Predictive Analytics", 
-    icon: BarChart3, 
-    color: "var(--accent-emerald)",
-    tools: ["Python", "Statistical Modeling", "Machine Learning"] 
-  },
-  { 
-    name: "Business Strategy & Ops", 
-    icon: Activity, 
-    color: "#f59e0b",
-    tools: ["Scenario Modeling", "KPI Tracking", "Risk Segmentation"] 
-  }
+const skills = [
+  "Tableau", "PowerBI", "Seaborn", "Matplotlib", 
+  "Pandas", "NumPy", "SQL", "Excel", 
+  "Python", "Statistical Modeling", "Machine Learning", 
+  "Scenario Modeling", "KPI Tracking", "Risk Segmentation"
 ];
 
 function App() {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = activeFilter === 'All' || project.categories.includes(activeFilter);
+    return matchesSearch && matchesFilter;
+  });
+
+  const closeModal = () => setSelectedProject(null);
 
   return (
-    <div className="portfolio-container">
-      {/* Background Decor */}
-      <div className="dva-background-container">
-        <motion.div className="dva-grid" style={{ y }} />
-        <motion.div style={{ y, width: '100%', height: '100%', position: 'absolute' }}>
-          <div className="data-node node-1" />
-          <div className="data-node node-2" />
-          <div className="data-node node-3" />
-        </motion.div>
-      </div>
+    <>
+      {/* Header */}
+      <header style={styles.header}>
+        <div style={styles.headerLeft}>
+          <div style={styles.headerLogo}>
+            <FaGithub size={32} color="#fff" />
+          </div>
 
-      {/* Navbar */}
-      <nav style={styles.nav}>
-        <div style={styles.logo}>DVA | <span className="accent-gradient">Daksh Batra</span></div>
-        <div style={styles.navLinks}>
-          <a href="#work" className="nav-item" style={styles.navItem}>Work</a>
-          <a href="#expertise" className="nav-item" style={styles.navItem}>Expertise</a>
-          <a href="#contact" className="nav-item" style={styles.navItem}>Contact</a>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <section style={styles.hero}>
-        <div style={styles.heroInner}>
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            style={styles.heroContent}
-          >
-            <h1 style={styles.heroTitle}>
-              Transforming Complex Data into <br/>
-              <span className="accent-gradient">Actionable Intelligence.</span>
-            </h1>
-            <p style={styles.heroSubtitle}>
-              Building high-performance data interfaces, predictive models, and immersive visual analytics tools that drive strategic decisions.
-            </p>
-            <div style={styles.heroActions}>
-              <a href="#work" style={styles.primaryBtn}>
-                Explore Projects <ChevronRight size={18} />
-              </a>
-              <a href="#contact" style={styles.secondaryBtn}>
-                Get in Touch
-              </a>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            style={styles.heroImageContainer}
-          >
-            <div style={styles.profileGlow}></div>
-            <img src={profileImg} alt="Daksh Batra" style={styles.profileImage} />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Skills / Expertise */}
-      <section id="expertise" style={styles.section}>
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          style={styles.sectionHeader}
-        >
-          <h2 style={styles.sectionTitle}>Technical Expertise</h2>
-          <div style={styles.titleLine}></div>
-        </motion.div>
+      {/* Main Layout */}
+      <div style={styles.container}>
         
-        <div style={styles.skillsGrid}>
-          {Skills.map((skill, index) => (
-            <motion.div 
-              key={skill.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="glass-panel"
-              style={styles.skillCard}
-            >
-              <skill.icon size={32} color={skill.color} style={{ marginBottom: '1rem' }} />
-              <h3 style={{ ...styles.skillName, color: skill.color }}>{skill.name}</h3>
-              <div style={styles.skillTools}>
-                {skill.tools.map(tool => (
-                  <span key={tool} style={{ 
-                    ...styles.skillToolTag, 
-                    borderBottom: `2px solid ${skill.color}` 
-                  }}>
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Projects */}
-      <section id="work" style={styles.section}>
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          style={styles.sectionHeader}
-        >
-          <h2 style={styles.sectionTitle}>Selected Work</h2>
-          <div style={styles.titleLine}></div>
-        </motion.div>
-
-        <div style={styles.projectsContainer}>
-          {projects.map((project, index) => (
-            <motion.div 
-              key={project.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-              className="glass-panel"
-              style={{
-                ...styles.projectCard,
-                flexDirection: index % 2 === 0 ? 'row' : 'row-reverse'
-              }}
-            >
-              <div style={styles.projectImageContainer}>
-                <img src={project.image} alt={project.title} style={styles.projectImage} />
-                <div style={styles.imageOverlay}></div>
-              </div>
-              
-              <div style={styles.projectInfo}>
-                <div style={styles.projectCategory}>{project.category}</div>
-                <h3 style={styles.projectTitle}>{project.title}</h3>
-                <p style={styles.projectDesc}>{project.description}</p>
-                
-                <div style={styles.techStack}>
-                  {project.tech.map(tech => (
-                    <span key={tech} style={styles.techTag}>{tech}</span>
-                  ))}
-                </div>
-                
-                <a href={project.link || "#"} target={project.link ? "_blank" : "_self"} rel="noopener noreferrer" style={styles.projectLink}>
-                  View Case Study <ExternalLink size={16} style={{ marginLeft: 8 }} />
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer id="contact" style={styles.footer}>
-        <div style={styles.footerContent}>
-          <h2 style={styles.footerTitle}>Ready to leverage your data?</h2>
-          <p style={styles.footerText}>Let's build intelligent solutions together.</p>
+        {/* Sidebar */}
+        <div style={styles.sidebar}>
+          <img src={profileImg} alt="Daksh Batra" style={styles.avatar} />
           
-          <div style={styles.socialLinks}>
-            <a href="mailto:daksh.batra2024@nst.rishihood.edu.in" target="_blank" rel="noopener noreferrer" style={styles.socialIcon}><Mail size={24} /></a>
-            <a href="https://github.com/dakshbatra01" target="_blank" rel="noopener noreferrer" style={styles.socialIcon}><FaGithub size={24} /></a>
-            <a href="https://www.linkedin.com/in/daksh-batra-124814317/" target="_blank" rel="noopener noreferrer" style={styles.socialIcon}><FaLinkedin size={24} /></a>
+          <div style={styles.vcardNames}>
+            <h1 style={styles.vcardFullname}>Daksh Batra</h1>
+            <h2 style={styles.vcardUsername}>dakshbatra01</h2>
+          </div>
+
+          <div style={styles.userProfileBio}>
+            Data Visualization & Analytics professional dedicated to "Transforming Complex Data into Actionable Intelligence."
+          </div>
+
+          <a href="https://github.com/dakshbatra01" target="_blank" rel="noopener noreferrer" style={styles.btnProfile}>
+            Follow
+          </a>
+
+
+
+          <ul style={styles.vcardDetails}>
+            <li style={styles.vcardItem}>
+              <MapPin size={16} />
+              <span>Delhi, India</span>
+            </li>
+            <li style={styles.vcardItem}>
+              <Mail size={16} />
+              <a href="mailto:daksh.batra2024@nst.rishihood.edu.in">daksh.batra2024@nst.rishihood.edu.in</a>
+            </li>
+            <li style={styles.vcardItem}>
+              <LinkIcon size={16} />
+              <a href="https://linkedin.com/in/daksh-batra-124814317/" target="_blank" rel="noopener noreferrer">linkedin.com/in/daksh-batra-124814317</a>
+            </li>
+          </ul>
+
+          <div style={styles.skillsSection}>
+            <h2 style={styles.skillsTitle}>Technical Expertise</h2>
+            <div style={styles.skillsBadges}>
+              {skills.map(skill => (
+                <span key={skill} style={styles.badge}>{skill}</span>
+              ))}
+            </div>
           </div>
         </div>
-        <div style={styles.copyright}>
-          © {new Date().getFullYear()} Daksh Batra. All rights reserved.
+
+        {/* Content Area */}
+        <div style={styles.content}>
+          
+          {/* Tabs */}
+          <div style={styles.tabs}>
+
+            <a href="#" style={{...styles.tab, ...styles.activeTab}}>
+              <Layout size={16} /> Repositories <span style={styles.counter}>{projects.length}</span>
+            </a>
+
+          </div>
+
+          {/* EXACT UI Controls Bar */}
+          <div className="controls-bar">
+            <input 
+              type="text" 
+              className="search-input" 
+              placeholder="Find a repository..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="filter-group">
+              {['All', 'Python', 'Tableau', 'Google Sheets', 'Data Visualisation'].map(filter => (
+                <button 
+                  key={filter}
+                  className={`filter-btn ${activeFilter === filter ? 'active' : ''}`}
+                  onClick={() => setActiveFilter(filter)}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="repo-grid">
+            {filteredProjects.length > 0 ? filteredProjects.map(project => (
+              <div key={project.id} className="repo-card" onClick={() => setSelectedProject(project)}>
+                <img src={project.image} alt={project.title} className="card-cover-image" />
+                <div className="repo-card-body">
+                  <div style={styles.repoHeader}>
+                    <BookOpen size={16} color="var(--gh-text-muted)" />
+                    <span style={styles.repoTitle}>
+                      {project.title}
+                    </span>
+                    <span style={styles.publicBadge}>Public</span>
+                  </div>
+                  
+                  <p style={styles.repoDesc}>{project.description}</p>
+                  
+                  <div style={styles.repoFooter}>
+                    <div style={styles.repoLang}>
+                      <span style={{...styles.langColor, backgroundColor: project.langColor}}></span>
+                      {project.language}
+                    </div>
+                    <div style={styles.repoStat}>
+                      <Star size={14} /> {project.stars}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )) : (
+              <div style={{gridColumn: 'span 2', padding: '40px', textAlign: 'center', color: 'var(--gh-text-muted)', border: '1px dashed var(--gh-border)', borderRadius: '6px'}}>
+                No repositories match your search or filter.
+              </div>
+            )}
+          </div>
+          
+          {/* Contribution Graph Mock */}
+          <div style={styles.contributions}>
+            <h2 style={styles.contributionsTitle}>58 contributions in the last year</h2>
+            <div style={styles.contributionsBox}>
+              <div style={styles.graphMock}>
+                {Array.from({ length: 52 }).map((_, col) => (
+                  <div key={col} style={styles.graphCol}>
+                    {Array.from({ length: 7 }).map((_, row) => {
+                      const rand = Math.random();
+                      let color = 'var(--gh-bg-secondary)';
+                      // Adjusted density for ~58 contributions (roughly 16% of the grid)
+                      if (rand > 0.98) color = '#39d353';
+                      else if (rand > 0.95) color = '#26a641';
+                      else if (rand > 0.90) color = '#006d32';
+                      else if (rand > 0.84) color = '#0e4429';
+                      
+                      return (
+                        <div key={row} style={{...styles.graphCell, backgroundColor: color}}></div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <footer style={styles.footer}>
+        <div style={styles.footerContent}>
+          <span>© 2026 GitHub, Inc.</span>
+          <nav style={styles.footerNav}>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Security</a>
+            <a href="#">Status</a>
+            <a href="#">Docs</a>
+            <a href="#">Contact</a>
+          </nav>
         </div>
       </footer>
-    </div>
+
+      {/* Project Modal */}
+      <div className={`modal-overlay ${selectedProject ? 'active' : ''}`} onClick={closeModal}>
+        {selectedProject && (
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title">{selectedProject.title}</div>
+              <button className="close-btn" onClick={closeModal}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <img src={selectedProject.image} alt={selectedProject.title} className="modal-img" />
+              <p className="modal-desc">{selectedProject.description}</p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={closeModal}>Cancel</button>
+              <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                View Live Repository
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
-// Inline styles for rapid custom layout (combined with index.css generic variables)
 const styles = {
-  nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1.2rem 5%',
-    position: 'fixed',
-    top: 0,
-    width: '100%',
-    zIndex: 100,
-    background: 'rgba(5, 8, 14, 0.85)',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-  },
-  logo: {
-    fontFamily: 'var(--font-heading)',
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    letterSpacing: '1px',
-  },
-  navLinks: {
-    display: 'flex',
-    gap: '2rem',
-  },
-  navItem: {
-    fontSize: '0.9rem',
-    color: 'var(--text-secondary)',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    transition: 'color 0.3s ease',
-  },
-  hero: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 5%',
-    position: 'relative',
-  },
-  heroInner: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    maxWidth: '1200px',
-    gap: '4rem',
-    zIndex: 10,
-    flexWrap: 'wrap-reverse',
-  },
-  heroContent: {
-    flex: '1',
-    minWidth: '300px',
-  },
-  heroImageContainer: {
-    flex: '1',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    minWidth: '300px',
-  },
-  profileGlow: {
-    position: 'absolute',
-    width: '110%',
-    height: '110%',
-    background: 'radial-gradient(circle, var(--accent-purple) 0%, transparent 60%)',
-    filter: 'blur(40px)',
-    opacity: 0.3,
-    zIndex: -1,
-  },
-  profileImage: {
-    width: '100%',
-    maxWidth: '380px',
-    aspectRatio: '1',
-    objectFit: 'cover',
-    borderRadius: '30%',
-    border: '2px solid rgba(255,255,255,0.1)',
-    boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-  },
-  heroTitle: {
-    fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-    marginBottom: '1.5rem',
-  },
-  heroSubtitle: {
-    fontSize: '1.1rem',
-    color: 'var(--text-secondary)',
-    marginBottom: '3rem',
-    maxWidth: '600px',
-  },
-  heroActions: {
-    display: 'flex',
-    gap: '1rem',
-    alignItems: 'center',
-  },
-  primaryBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    padding: '1rem 2rem',
-    background: 'linear-gradient(135deg, #4f46e5, #7e22ce)',
-    color: '#fff',
-    borderRadius: '30px',
-    fontFamily: 'var(--font-heading)',
-    fontWeight: 600,
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    border: 'none',
-    cursor: 'pointer',
-    boxShadow: '0 4px 15px rgba(79, 70, 229, 0.4)',
-  },
-  secondaryBtn: {
-    padding: '1rem 2rem',
-    background: 'transparent',
-    color: 'var(--text-primary)',
-    borderRadius: '30px',
-    fontFamily: 'var(--font-heading)',
-    fontWeight: 500,
-    border: '1px solid rgba(255,255,255,0.2)',
-    transition: 'background 0.3s',
-  },
-  section: {
-    padding: '4rem 5%',
-  },
-  sectionHeader: {
-    marginBottom: '2.5rem',
-  },
-  sectionTitle: {
-    fontSize: '2.5rem',
-    marginBottom: '1rem',
-  },
-  titleLine: {
-    height: '4px',
-    width: '60px',
-    background: 'var(--accent-purple)',
-    borderRadius: '2px',
-  },
-  skillsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '1.5rem',
-  },
-  skillCard: {
-    padding: '2.5rem 2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    transition: 'transform 0.3s ease, background 0.3s ease',
-    cursor: 'default',
-  },
-  skillName: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '0.8rem',
-    letterSpacing: '0.5px',
-  },
-  skillTools: {
-    marginTop: '1rem',
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '0.5rem',
-    justifyContent: 'center',
-  },
-  skillToolTag: {
-    fontSize: '1rem',
-    fontWeight: '600',
-    padding: '0.5rem 1rem',
-    background: 'rgba(255,255,255,0.08)',
-    borderRadius: '16px',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: 'var(--text-primary)',
-    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-  },
-  projectsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '3rem',
-  },
-  projectCard: {
-    display: 'flex',
-    gap: '4rem',
-    padding: '2rem',
-    alignItems: 'center',
-    // Responsive wrapping handled via media queries ideally, but simulated here via flexWrap
-    flexWrap: 'wrap', 
-  },
-  projectImageContainer: {
-    flex: '1.2',
-    minWidth: '300px',
-    position: 'relative',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-  },
-  projectImage: {
-    width: '100%',
-    height: 'auto',
-    display: 'block',
-    transition: 'transform 0.5s ease',
-  },
-  imageOverlay: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: 'linear-gradient(to top, var(--bg-primary) 0%, transparent 40%)',
-    pointerEvents: 'none',
-  },
-  projectInfo: {
-    flex: '1',
-    minWidth: '300px',
-  },
-  projectCategory: {
-    color: 'var(--accent-cyan)',
-    fontSize: '0.9rem',
-    fontFamily: 'var(--font-heading)',
-    textTransform: 'uppercase',
-    letterSpacing: '2px',
-    marginBottom: '1rem',
-  },
-  projectTitle: {
-    fontSize: '2.2rem',
-    marginBottom: '1rem',
-  },
-  projectDesc: {
-    color: 'var(--text-secondary)',
-    fontSize: '1.05rem',
-    marginBottom: '2rem',
-  },
-  techStack: {
-    display: 'flex',
-    gap: '0.8rem',
-    flexWrap: 'wrap',
-    marginBottom: '2.5rem',
-  },
-  techTag: {
-    padding: '0.4rem 1rem',
-    background: 'rgba(255,255,255,0.05)',
-    borderRadius: '20px',
-    fontSize: '0.85rem',
-    color: 'var(--text-secondary)',
-    border: '1px solid rgba(255,255,255,0.1)',
-  },
-  projectLink: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    background: 'none',
-    border: 'none',
-    color: 'var(--text-primary)',
-    fontFamily: 'var(--font-heading)',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    paddingBottom: '4px',
-    borderBottom: '1px solid var(--accent-purple)',
-    transition: 'color 0.3s ease',
-  },
-  footer: {
-    marginTop: '3rem',
-    padding: '4rem 5% 2rem',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-    textAlign: 'center',
-  },
-  footerContent: {
-    marginBottom: '4rem',
-  },
-  footerTitle: {
-    fontSize: '2rem',
-    marginBottom: '1rem',
-  },
-  footerText: {
-    color: 'var(--text-secondary)',
-    marginBottom: '2.5rem',
-  },
-  socialLinks: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '1.5rem',
-  },
-  socialIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
-    background: 'var(--bg-secondary)',
-    color: 'var(--text-primary)',
-    transition: 'transform 0.3s ease, background 0.3s ease',
-  },
-  copyright: {
-    color: 'var(--text-secondary)',
-    fontSize: '0.85rem',
-  }
+  header: { backgroundColor: '#010409', padding: '16px 24px', borderBottom: '1px solid var(--gh-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', },
+  headerLeft: { display: 'flex', alignItems: 'center', gap: '16px', width: '100%', },
+  headerLogo: { display: 'flex', alignItems: 'center', },
+  headerSearch: { background: '#0d1117', border: '1px solid var(--gh-border)', borderRadius: '6px', padding: '4px 12px', color: 'var(--gh-text-muted)', fontSize: '14px', width: '280px', },
+  headerNav: { display: 'flex', gap: '16px', marginLeft: '8px', },
+  headerLink: { color: '#fff', fontWeight: '600', fontSize: '14px', textDecoration: 'none' },
+  container: { maxWidth: '1280px', margin: '0 auto', padding: '24px', display: 'flex', gap: '64px', flexGrow: 1, flexWrap: 'nowrap', },
+  sidebar: { width: '100%', maxWidth: '296px', flexShrink: 0, },
+  avatar: { width: '100%', height: 'auto', aspectRatio: '1', borderRadius: '50%', border: '1px solid var(--gh-border)', marginBottom: '16px', objectFit: 'cover', },
+  vcardNames: { marginBottom: '16px', },
+  vcardFullname: { fontSize: '24px', fontWeight: 600, lineHeight: 1.25, color: 'var(--gh-text-main)', margin: 0 },
+  vcardUsername: { fontSize: '20px', fontWeight: 300, lineHeight: 1.25, color: 'var(--gh-text-muted)', margin: 0 },
+  userProfileBio: { marginBottom: '16px', fontSize: '16px', color: 'var(--gh-text-main)', },
+  btnProfile: { display: 'block', width: '100%', textAlign: 'center', background: 'var(--gh-btn-bg)', border: '1px solid var(--gh-border)', color: 'var(--gh-text-main)', padding: '5px 16px', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', marginBottom: '16px', textDecoration: 'none' },
+  followStats: { display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--gh-text-muted)', fontSize: '14px', marginBottom: '16px', },
+  boldText: { fontWeight: 600, color: 'var(--gh-text-main)', },
+  vcardDetails: { listStyle: 'none', padding: 0, margin: 0, marginBottom: '24px', borderBottom: '1px solid var(--gh-border)', paddingBottom: '16px', },
+  vcardItem: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', color: 'var(--gh-text-main)', fontSize: '14px', wordBreak: 'break-all', },
+  skillsSection: { marginTop: '16px', },
+  skillsTitle: { fontSize: '16px', fontWeight: 600, marginBottom: '8px', },
+  skillsBadges: { display: 'flex', flexWrap: 'wrap', gap: '6px', },
+  badge: { border: '1px solid var(--gh-border)', padding: '2px 10px', borderRadius: '2em', fontSize: '12px', fontWeight: 500, color: 'var(--gh-text-muted)', whiteSpace: 'nowrap', backgroundColor: 'rgba(255,255,255,0.02)', },
+  content: { flexGrow: 1, minWidth: 0, },
+  tabs: { display: 'flex', gap: '8px', borderBottom: '1px solid var(--gh-border)', paddingBottom: '0', marginBottom: '24px', overflowX: 'auto', },
+  tab: { padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--gh-text-main)', fontSize: '14px', borderBottom: '2px solid transparent', textDecoration: 'none' },
+  activeTab: { fontWeight: 600, borderBottom: '2px solid #f78166', },
+  counter: { background: 'rgba(255,255,255,0.1)', borderRadius: '20px', padding: '2px 6px', fontSize: '12px', fontWeight: 500, },
+  repoHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', },
+  repoTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--gh-link)', wordBreak: 'break-all', },
+  publicBadge: { border: '1px solid var(--gh-border)', borderRadius: '20px', padding: '0 7px', fontSize: '12px', color: 'var(--gh-text-muted)', marginLeft: 'auto', },
+  repoDesc: { fontSize: '12px', color: 'var(--gh-text-muted)', marginBottom: '16px', flexGrow: 1, },
+  repoFooter: { display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px', color: 'var(--gh-text-muted)', },
+  repoLang: { display: 'flex', alignItems: 'center', gap: '4px', },
+  langColor: { width: '12px', height: '12px', borderRadius: '50%', },
+  repoStat: { display: 'flex', alignItems: 'center', gap: '4px', },
+  contributions: { marginTop: '32px', },
+  contributionsTitle: { fontSize: '16px', fontWeight: 400, marginBottom: '8px', },
+  contributionsBox: { border: '1px solid var(--gh-border)', borderRadius: '6px', padding: '16px', },
+  graphMock: { display: 'flex', gap: '3px', overflowX: 'auto', paddingBottom: '16px', },
+  graphCol: { display: 'flex', flexDirection: 'column', gap: '3px', },
+  graphCell: { width: '10px', height: '10px', borderRadius: '2px', },
+  footer: { marginTop: '40px', padding: '40px 0', borderTop: '1px solid var(--gh-border)', maxWidth: '1280px', margin: '40px auto 0', width: '100%', },
+  footerContent: { display: 'flex', alignItems: 'center', gap: '24px', fontSize: '12px', color: 'var(--gh-text-muted)', flexWrap: 'wrap', padding: '0 24px', },
+  footerNav: { display: 'flex', gap: '16px', flexWrap: 'wrap', },
 };
 
 export default App;
